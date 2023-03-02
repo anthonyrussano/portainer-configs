@@ -1,0 +1,20 @@
+---
+version: "3.5"
+services:
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    ports:
+      - 8091:8080
+      - 8092:8081
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - library:/config
+volumes:
+  library:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.32.25.118,nolock,rw,soft,nfsvers=4"
+      device: ":/mnt/prox-pool/Coolnow/docker/calibre"

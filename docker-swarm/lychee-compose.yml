@@ -1,0 +1,53 @@
+---
+version: "3"
+services:
+  mariadb:
+    image: lscr.io/linuxserver/mariadb:latest
+    container_name: lychee_mariadb
+    restart: always
+    volumes:
+      - lycheemdb:/config
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=lychee
+      - MYSQL_USER=lychee
+      - MYSQL_PASSWORD=dbpassword
+      - PGID=1000
+      - PUID=1000
+      - TZ=Europe/London
+  lychee:
+    image: lspipepr/lychee:v4.7.0-pkg-61a4e78d-pr-51
+    container_name: lychee
+    restart: always
+    depends_on:
+      - mariadb
+    volumes:
+      - lycheecfg:/config
+      - lycheepics:/pictures
+    environment:
+      - DB_HOST=mariadb
+      - DB_USERNAME=lychee
+      - DB_PASSWORD=dbpassword
+      - DB_DATABASE=lychee
+      - DB_PORT=3306
+      - PGID=1000
+      - PUID=1000
+      - TZ=Europe/London
+    ports:
+      - 8025:80
+volumes:
+  lycheemdb:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.32.25.118,nolock,rw,soft,nfsvers=4"
+      device: ":/mnt/prox-pool/Coolnow/docker/lychee/db"
+  lycheecfg:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.32.25.118,nolock,rw,soft,nfsvers=4"
+      device: ":/mnt/prox-pool/Coolnow/docker/lychee/config"
+  lycheepics:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.32.25.118,nolock,rw,soft,nfsvers=4"
+      device: ":/mnt/prox-pool/Coolnow/docker/lychee/pics"

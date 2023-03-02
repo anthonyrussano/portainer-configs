@@ -1,0 +1,15 @@
+---
+version: '3.8'
+services:
+  pingvin-share:
+    image: stonith404/pingvin-share
+    ports:
+      - 3582:3000
+    volumes:
+      - data:/opt/app/backend/data
+volumes:
+  data:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.32.25.118,nolock,rw,soft,nfsvers=4"
+      device: ":/mnt/prox-pool/Coolnow/docker/pingvin"

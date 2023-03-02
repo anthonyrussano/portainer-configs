@@ -1,0 +1,19 @@
+---
+version: '3'
+services:
+  trilium:
+    image: zadam/trilium
+    restart: always
+    environment:
+      - TRILIUM_DATA_DIR=/home/node/trilium-data
+    ports:
+      - "8056:8080"
+    volumes:
+      - trilium:/home/node/trilium-data
+
+volumes:
+  trilium:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.32.25.118,nolock,rw,soft,nfsvers=4"
+      device: ":/mnt/prox-pool/Coolnow/docker/trilium"

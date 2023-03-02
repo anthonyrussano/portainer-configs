@@ -1,0 +1,39 @@
+---
+version: "3.9"
+services:
+  jellyfin:
+    image: jellyfin/jellyfin
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - "node.labels.gpu_plus==yes"
+    ports:
+      - 8096:8096
+    volumes:
+      - media_config:/config
+      - media_cache:/cache
+      - media_media:/media
+    devices:
+      # VAAPI Devices (examples)
+      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/card0:/dev/dri/card0
+      # - /dev/dri/card1:/dev/dri/card1      
+volumes:
+  media_config:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.32.25.118,nolock,soft,rw,nfsvers=4"
+      device: ":/mnt/prox-pool/Coolnow/docker/jellyfin/config"
+  media_cache:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.32.25.118,nolock,soft,rw,nfsvers=4"
+      device: ":/mnt/prox-pool/Coolnow/docker/jellyfin/cache"
+  media_media:
+    driver_opts:
+      type: "nfs"
+      o: "addr=10.32.25.118,nolock,soft,rw,nfsvers=4"
+      device: ":/mnt/prox-pool/Coolnow/docker/jellyfin/media"
